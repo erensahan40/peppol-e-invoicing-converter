@@ -49,6 +49,10 @@
   margin: 0;
 }
 
+html {
+  font-size: 14px; /* Reduced from default 16px for more zoomed out appearance */
+}
+
 html,
 body {
   max-width: 100vw;
@@ -3094,7 +3098,7 @@ a {
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 900;
   line-height: 1.1;
   margin: 0;
@@ -3134,7 +3138,7 @@ a {
 }
 
 .hero-description {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   line-height: 1.7;
   opacity: 0.95;
   max-width: 600px;
@@ -3453,7 +3457,7 @@ a {
 }
 
 .section-title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 900;
   color: var(--color-text);
   margin-bottom: var(--spacing-lg);
@@ -3465,7 +3469,7 @@ a {
 }
 
 .section-subtitle {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   color: var(--color-text-secondary);
   max-width: 700px;
   margin: 0 auto;
@@ -4005,11 +4009,11 @@ a {
   }
 
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
 
   .hero-description {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   .hero-cta {
@@ -4032,7 +4036,7 @@ a {
   }
 
   .section-title {
-    font-size: 2rem;
+    font-size: 1.85rem;
   }
 
   .features-grid {
@@ -4103,7 +4107,7 @@ a {
 }
 
 .pricing-title {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 800;
   color: var(--color-text);
   margin-bottom: var(--spacing-md);
@@ -4390,7 +4394,7 @@ a {
   }
 
   .pricing-title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
 
   .pricing-subtitle {
@@ -4412,11 +4416,11 @@ a {
   }
 
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.85rem;
   }
 
   .hero-description {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .hero-features {
@@ -4437,15 +4441,11 @@ a {
   }
 
   .section-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .section-subtitle {
-    font-size: 1.1rem;
-  }
-
-  .section-title {
-    font-size: 1.75rem;
+    font-size: 1rem;
   }
 
   .nav-container {
