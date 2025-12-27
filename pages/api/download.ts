@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/lib/prisma';
-import { checkUserQuota, useUserCredit } from '@/lib/quota';
+import { checkUserQuota, deductUserCredit } from '@/lib/quota';
 import { getAnonId } from '@/lib/anon-cookie';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -91,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Use a credit if not unlimited (pay on success)
     if (!quota.isUnlimited) {
-      const creditUsed = await useUserCredit(userId);
+      const creditUsed = await deductUserCredit(userId);
       if (!creditUsed) {
         return res.status(402).json({
           error: 'Insufficient credits',

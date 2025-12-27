@@ -142,7 +142,7 @@ export async function checkUserQuota(userId: string): Promise<{
 /**
  * Use a credit for a user (for successful conversion download)
  */
-export async function useUserCredit(userId: string): Promise<boolean> {
+export async function deductUserCredit(userId: string): Promise<boolean> {
   const payment = await prisma.payment.findFirst({
     where: { userId },
     orderBy: { updatedAt: 'desc' },
