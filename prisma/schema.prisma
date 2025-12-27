@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OwnerType {
+  ANON
+  USER
+}
+
+enum ConversionStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+}
+
+enum PaymentType {
+  ONE_OFF
+  SUBSCRIPTION
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  payments      Payment[]
+  sessions      Session[]
+  accounts      Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model AnonUsage {
+  anonId       String   @id @default(uuid())
+  successCount Int      @default(0)
+  totalCount   Int      @default(0)
+  lastSeen     DateTime @default(now()) @updatedAt
+  ipHash       String?  // Hashed IP address for rate limiting
+  createdAt    DateTime @default(now())
+
+  @@index([ipHash])
+  @@index([lastSeen])
+}
+
+model Conversion {
+  id                  String           @id @default(cuid())
+  ownerType           OwnerType
+  ownerId             String // User.id or AnonUsage.anonId
+  status              ConversionStatus @default(PENDING)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  filename            String
+  inputType           String           // "pdf" or "xlsx"
+  previewXml          String?          @db.Text // Limited preview XML (first 50 lines)
+  fullXml             String?          @db.Text // Full XML (only stored if user paid/downloaded)
+  validationJson      Json?            // ValidationReport as JSON
+  mappingJson         Json?            // MappingReport as JSON
+  normalizedInvoiceJson Json?          // InvoiceNormalized as JSON
+  success             Boolean          @default(false)
+  downloaded          Boolean          @default(false)
+  downloadedAt        DateTime?
+  
+  // For file storage reference (in MVP: tmp folder path, later: S3 key)
+  filePath            String?
+  originalFileName    String
+
+  @@index([ownerType, ownerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Payment {
+  id                   String      @id @default(cuid())
+  userId               String
+  type                 PaymentType
+  mollieCustomerId     String?
+  molliePaymentId      String?
+  mollieSubscriptionId String?
+  creditsBalance       Int         @default(0)
+  isUnlimited          Boolean     @default(false)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model DownloadToken {
+  id           String   @id @default(cuid())
+  conversionId String
+  ownerType    OwnerType
+  ownerId      String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([conversionId])
+  @@index([ownerType, ownerId])
+}
+
